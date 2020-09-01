@@ -1,13 +1,15 @@
 BACKUP ~Jimfix/backup~
-AUTHOR ~anotherdole@gmail.com~
-VERSION ~v2.5~
+AUTHOR ~banananaut2@gmail.com~
+VERSION ~v3.0~
 
 README ~jimfix/readme/readme.txt~
 
 LANGUAGE ~English~     ~english~     ~jimfix/languages/english/setup.tra~
 
+//Deprecated Sunfire fix
 BEGIN @10
 DESIGNATED 0
+DEPRECATED @35
 GROUP @1
 COPY_EXISTING ~spwi523.spl~ ~override~
   LPF ALTER_SPELL_EFFECT INT_VAR match_opcode = 12 power = 5 END
@@ -18,24 +20,33 @@ ACTION_IF FILE_EXISTS_IN_GAME ~dw#0w523.spl~ BEGIN
   BUT_ONLY
 END
 
+
+//Deprecated contingency fix
 BEGIN @11
 DESIGNATED 1
+DEPRECATED @35
 GROUP @1
 REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~tobex_ini/tobexcore.ini~ @28
 COPY_EXISTING ~contingx.2da~ ~override~
   REPLACE_TEXTUALLY ~SPWI510~ ~****   ~
 BUT_ONLY
 
+
+//Flame arrow vs. Shield of Reflection
 BEGIN @12
 DESIGNATED 2
 GROUP @1
-REQUIRE_PREDICATE FILE_EXISTS ~override/dw#pro_NM.mrk~ @29
+REQUIRE_COMPONENT "setup-stratagems.tp2" "5900" @29
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~shld24.itm~ @37
 COPY_EXISTING ~shld24.itm~ ~override~
   LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 197 target = 1 parameter2 = IDS_OF_SYMBOL(projectl "dw#flam") timing = 2 END
 BUT_ONLY
 
+
+//Deprecated smarter Abazigal fix
 BEGIN @13
 DESIGNATED 3
+DEPRECATED @35
 GROUP @1
 REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~abazdg02.cre~ @30
 REQUIRE_PREDICATE FILE_EXISTS ~override/dw#ascension_abazigal.mrk~ @31
@@ -46,8 +57,12 @@ COPY_EXISTING ~dragblue.bcs~ ~override~
   REPLACE_BCS_BLOCK ~jimfix/baf/abazconting.baf~ ~jimfix/baf/abazcontingtamah.baf~
 BUT_ONLY
 
+
+
+//Deprecated Smarter Ireneicus fix
 BEGIN @14
 DESIGNATED 4
+DEPRECATED @35
 GROUP @1
 REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~finiren.cre~ @30
 REQUIRE_PREDICATE FILE_EXISTS ~override/dw#ascension_sendai_irenicus.mrk~ @32
@@ -57,8 +72,12 @@ COPY_EXISTING ~finiren.bcs~ ~override~
   END
 BUT_ONLY
 
+
+
+//Deprecated Smarter Abaziagal fix
 BEGIN @15
 DESIGNATED 5
+DEPRECATED @35
 GROUP @1
 REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~finsolar.cre~ @30
 REQUIRE_PREDICATE FILE_EXISTS ~override/dw#celestial.mrk~ @33
@@ -66,6 +85,8 @@ COPY_EXISTING ~finsol04.bcs~ ~override~
   REPLACE_BCS_BLOCK ~jimfix/baf/solarbad.baf~ ~jimfix/baf/empty.baf~
 BUT_ONLY
 
+
+//Check for incorrect spell animations
 BEGIN @16
 DESIGNATED 100
 GROUP @1
@@ -88,20 +109,25 @@ COPY_EXISTING_REGEXP GLOB ~SPWI[0-9]*\.spl\|SPPR[0-9]*\.spl~ ~override~
   END
 BUT_ONLY
 
+
+//Deprecated Silent Prebuffs fix. Possibly still needed?
 BEGIN @17
 DESIGNATED 400
+DEPRECATED @35
 GROUP @2
-REQUIRE_PREDICATE FILE_EXISTS ~override/dw#mage.mrk~ @34
-ACTION_FOR_EACH filename IN ~dw#sw102~ ~dw#sw408~ ~dw#sw319~ ~dw#sw606~ ~dw#sw512~ ~dw#sw517~ ~dw#sw320~ 
+//REQUIRE_PREDICATE FILE_EXISTS ~override/dw#mage.mrk~ @34
+ACTION_FOR_EACH filename IN ~dwsw102~ ~dwsw408~ ~dwsw319~ ~dwsw606~ ~dwsw512~ ~dwsw517~ ~dwsw320~ 
 BEGIN
   ACTION_IF FILE_EXISTS_IN_GAME ~%filename%.spl~ BEGIN
     COPY_EXISTING ~%filename%.spl~ ~override~
       READ_LONG 0x8 spell_name
-      LPF ADD_SPELL_EFFECT INT_VAR opcode = 139 target = 1 parameter1 = spell_name header = 1 insert_point = 0 END
+      LPF ADD_SPELL_EFFECT INT_VAR opcode = 139 target = 1 parameter1 = spell_name insert_point = 0 END
     BUT_ONLY
   END
 END
 
+
+//Add spell school notifications to spells
 BEGIN @18
 DESIGNATED 201
 GROUP @2
@@ -137,16 +163,19 @@ SUBCOMPONENT @23
 INCLUDE ~jimfix/lib/schoolnotes.tph~
 LAF ADD_SCHOOL_NOTIFICATIONS INT_VAR threshold = 5 END
 
+//Expiration notices for spells
 BEGIN @24
 DESIGNATED 300
 GROUP @2
 INCLUDE ~jimfix/lib/expirations.tph~
 
+//Expiration notices for items
 BEGIN @25
 DESIGNATED 600
 GROUP @2
 INCLUDE ~jimfix/lib/itemexpirations.tph~
 
+//Reveal all hidden doors
 BEGIN @26
 DESIGNATED 500
 GROUP @2
@@ -161,9 +190,12 @@ COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 	END
 BUT_ONLY
 
+//Make Spell Shield block Wish Breach and Mordenkainen's Disjunction
 BEGIN @27 
 DESIGNATED 700
 GROUP @2
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW#WISH1.SPL~ @29
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPWI513C.SPL~ @36
 //Fix wish breach
 COPY_EXISTING ~DW#WISH1.SPL~ ~override/JF#WISHA.SPL~
 	LPF ALTER_SPELL_HEADER INT_VAR projectile = 1 END
@@ -177,7 +209,7 @@ ACTION_FOR_EACH filename IN ~DW#WISH1.SPL~ ~SPWISH26.SPL~ ~SPWISH38.SPL~ BEGIN
 		LPF ADD_SPELL_EFFECT INT_VAR opcode = 146 target = 2 parameter2 = 1 timing = 1 STR_VAR resource = ~JF#WISHB~ END
 	IF_EXISTS
 END
-ACTION_FOR_EACH filename IN ~SPWI519.SPL~ ~DW#0W519.SPL~ ~DW#SW519.SPL~ BEGIN
+ACTION_FOR_EACH filename IN ~SPWI519.SPL~ ~DWSW519.SPL~ BEGIN
 	COPY_EXISTING ~%filename%~ ~override~
 		FOR(level = 0; level < 10; level = level + 1) BEGIN
 			dur = 198 + level * 18
@@ -199,7 +231,7 @@ ACTION_IF FILE_EXISTS_IN_GAME ~DW#SOLDI.SPL~ BEGIN
 		LPF ADD_SPELL_EFFECT INT_VAR opcode = 146 target = 2 parameter2 = 1 timing = 1 STR_VAR resource = ~JF#DISJA~ END
 		LPF ADD_SPELL_EFFECT INT_VAR opcode = 146 target = 2 parameter2 = 1 timing = 1 STR_VAR resource = ~JF#DISJB~ END
 	IF_EXISTS
-	ACTION_FOR_EACH filename IN ~SPWI519.SPL~ ~DW#0W519.SPL~ ~DW#SW519.SPL~ BEGIN
+	ACTION_FOR_EACH filename IN ~SPWI519.SPL~ ~DWSW519.SPL~ BEGIN
 		COPY_EXISTING ~%filename%~ ~override~
 			FOR(level = 0; level < 10; level = level + 1) BEGIN
 				dur = 198 + level * 18

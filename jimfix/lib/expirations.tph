@@ -48,6 +48,13 @@ BEGIN
   END
 END
 
+//Function to get the name of the given spell as a string.
+DEFINE_ACTION_FUNCTION ~GET_SPELL_NAME~ STR_VAR spell_name="" RET name BEGIN
+	COPY_EXISTING ~%spell_name%.SPL~ ~override~
+		READ_STRREF 0x08 name
+    BUT_ONLY
+END
+
 //Fix glitch that causes expiration notices to be wrong at high levels for Holy Power
 ACTION_IF FILE_EXISTS_IN_GAME ~SPPR412.SPL~ BEGIN
 	COPY_EXISTING ~SPPR412.SPL~ ~override~
@@ -56,7 +63,8 @@ ACTION_IF FILE_EXISTS_IN_GAME ~SPPR412.SPL~ BEGIN
 END
 
 //Buffs that only target the caster and can be dispelled
-ACTION_FOR_EACH ~spell~ IN ~SPPR109~ ~SPPR110~ ~SPPR111~ 
+ACTION_FOR_EACH ~spell~ IN 
+			   ~SPPR109~ ~SPPR110~ ~SPPR111~
 			   ~SPPR206~ ~SPPR213~ ~SPPR214~
 			   ~SPPR412~ ~SPPR416~
 			   ~SPPR505~ ~SPPR513~ ~SPPR515~
@@ -73,9 +81,11 @@ ACTION_FOR_EACH ~spell~ IN ~SPPR109~ ~SPPR110~ ~SPPR111~
 			   ~SPWI804~ ~SPWI808~
 			   ~SPWI902~ ~SPWI907~ ~SPWI915~ ~SPWI916~
 			   ~SPIN103~
-			   ~SPCL232~  
+			   ~SPCL232~ ~SPCL237~  
 			   ~SPCL721~ ~SPCL731~
 			   ~SPCL732~ ~SPCL741~
+			   ~SPDM102~ ~SPDM105~ ~SPDM106~
+			   ~BHAAL1B~ ~BHAAL2A~ ~BHAAL3B~
   BEGIN
   ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
     COPY_EXISTING ~%spell%.SPL~ ~override~
@@ -85,16 +95,25 @@ ACTION_FOR_EACH ~spell~ IN ~SPPR109~ ~SPPR110~ ~SPPR111~
 END
 
 //Buffs that only target the caster and can't be dispelled
-ACTION_FOR_EACH spell IN ~SPCL152~ ~SPCL321~ ~SPCL423~ ~SPCL521~ ~SPCL522~
-						 ~SPCL904~ ~SPCL907~ ~SPCL913~ ~SPCL914~ ~SPCL917~
+ACTION_FOR_EACH spell IN ~SPCL152~ ~SPCL238~ ~SPCL321~ ~SPCL423~ ~SPCL521~ ~SPCL522~
+						 ~SPCL904~ ~SPCL907~ ~SPCL913~ ~SPCL914~ ~SPCL917~ ~SPCL941~
 BEGIN
 	COPY_EXISTING ~%spell%.spl~ ~override~
 		LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 dispel = 2 END
 	IF_EXISTS
 END
 
+//Buffs that only target the caster are natural abilities?
+ACTION_FOR_EACH spell IN ~SPCL938~ ~SPCL940~
+BEGIN
+	COPY_EXISTING ~%spell%.spl~ ~override~
+		LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 dispel = 0 END
+	IF_EXISTS
+END
+
 //Buffs that affect a target
-ACTION_FOR_EACH ~spell~ IN ~SPPR101~ ~SPPR107~ ~SPPR108~
+ACTION_FOR_EACH ~spell~ IN 
+			   ~SPPR101~ ~SPPR107~ ~SPPR108~ ~SPPR150~
 			   ~SPPR201~ ~SPPR202~ ~SPPR210~
 			   ~SPPR306~ ~SPPR312~
 			   ~SPPR403~ ~SPPR407~ ~SPPR408~ ~SPPR409~ ~SPPR413~
@@ -108,6 +127,7 @@ ACTION_FOR_EACH ~spell~ IN ~SPPR101~ ~SPPR107~ ~SPPR108~
 			   ~SPWI613~ ~SPWI606~
 			   ~SPWI702~ ~SPWI721~
 			   ~SPWI803~
+			   ~SPDR401~
 			   ~SPCL213~
   BEGIN
   ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
@@ -130,26 +150,52 @@ ACTION_IF FILE_EXISTS_IN_GAME ~DW#QALAC.SPL~ THEN BEGIN
   BUT_ONLY
 END
 
+LAF ~GET_SPELL_NAME~ STR_VAR spell_name = ~SPPR203~ RET ovName = name END
+
 //fixpack version of chant
 ACTION_IF FILE_EXISTS_IN_GAME ~SPPR203D.spl~ BEGIN
   COPY_EXISTING ~SPPR203D.spl~ ~override~
-    LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 STR_VAR overrideName = "Chant" END 
+    LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 STR_VAR overrideName = EVALUATE_BUFFER ~%ovName%~ END 
   BUT_ONLY
 END
 
 //SCS added spells
-ACTION_FOR_EACH filename IN ~dw#sp101~ ~dw#sp108~ ~dw#sp110~ ~dw#sp111~ ~dw#sp202~ ~dw#sp206~ ~dw#sp214~
-			    ~dw#sp306~ ~dw#sp403~ ~dw#sp406~ ~dw#sp409~ ~dw#sp412~ ~dw#sp501~ ~dw#sp506~
-			    ~dw#sp508~ ~dw#sp509~ ~dw#sp513~ ~dw#sp603~ ~dw#sp613~ ~dw#sp701~ ~dw#sp711~
-			    ~dw#sp725~ ~dw#sp703~ ~dw#sw102~ ~dw#sw114~ ~dw#sw206~ ~dw#sw212~ ~dw#sw305~
-			    ~dw#sw311~ ~dw#sw317~ ~dw#sw318~ ~dw#sw319~ ~dw#sw320~ ~dw#sw403~ ~dw#sw405~
-			    ~dw#sw406~ ~dw#sw418~ ~dw#sw505~ ~dw#sw512~ ~dw#sw517~ ~dw#sw518~ ~dw#sw519~
-			    ~dw#sw522~ ~dw#sw590~ ~dw#sw592~ ~dw#sw602~ ~dw#sw606~ ~dw#sw613~ ~dw#sw618~
-			    ~dw#sw701~ ~dw#sw702~ ~dw#sw902~ ~MELSPL01~ ~MELSPL03~
+ACTION_FOR_EACH filename IN 
+	~dwsc721~
+	~dwsp110~ ~dwsp111~
+	~dwsp202~ ~dwsp206~ ~dwsp213~ ~dwsp214~ ~dwsp218~
+	~dwsp306~ ~dwsp324~ ~dwsp328~
+	~dwsp403~ ~dwsp409~ ~dwsp412~ 
+	~dwsp506~ ~dwsp508~ ~dwsp509~ ~dwsp513~ ~dwsp525~
+	~dwsp603~ ~dwsp613~ ~dwsp615~ ~dwsp698~ 
+	~dwsp701~ ~dwsp711~ ~dwsp721~ ~dwsp725~ ~dwsp730~ ~dwsp735~
+	~dwsw102~ ~dwsw114~ 
+	~dwsw206~ ~dwsw212~ 
+    ~dwsw310~ ~dwsw311~ ~dwsw317~ ~dwsw318~ ~dwsw319~ ~dwsw320~ 
+	~dwsw403~ ~dwsw405~ ~dwsw406~ ~dwsw414~ ~dwsw418~ 
+	~dwsw505~ ~dwsw512~ ~dwsw517~ ~dwsw518~ ~dwsw519~ ~dwsw522~ ~dwsw590~ ~dwsw592~ 
+	~dwsw602~ ~dwsw606~ ~dwsw613~ ~dwsw618~
+	~dwsw701~ ~dwsw702~ ~dwsw723~ ~dwsw726~
+	~dwsw806~
+	~dwsw902~ ~dwsw920~ 
+	~MELSPL02~ ~MELSPL03~
 BEGIN
   ACTION_IF FILE_EXISTS_IN_GAME ~%filename%.spl~ BEGIN
     COPY_EXISTING ~%filename%.spl~ ~override~
       LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 END
+    BUT_ONLY
+  END
+END
+
+//SCS added spells
+ACTION_FOR_EACH filename IN 
+	~dwsp101~ ~dwsp108~
+	~dwsp406~
+	~dwsw305~
+BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%filename%.spl~ BEGIN
+    COPY_EXISTING ~%filename%.spl~ ~override~
+      LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 END
     BUT_ONLY
   END
 END
@@ -171,7 +217,6 @@ ACTION_IF FILE_EXISTS_IN_GAME ~SPWI909.SPL~ BEGIN
 			stringToAdd = RESOLVE_STR_REF(@202)
 			LPF ADD_SPELL_EFFECT INT_VAR opcode = 139 target = 1 timing = 4 header = 1 parameter1 = stringToAdd resist_dispel = 3 duration = dur END
 		END
-
 	BUT_ONLY
 END
 
@@ -205,5 +250,117 @@ ACTION_FOR_EACH filename IN ~SPWISH17.SPL~ ~DW#WISH3.SPL~ BEGIN
 				LPF ADD_SPELL_EFFECT INT_VAR opcode = 139 target = 1 timing = 4 header = 1 parameter1 = stringToAdd resist_dispel = 3 duration = dur END
 			END
 		BUT_ONLY
+	END
+END
+
+//IWD Divine Spells - player versions. I'm seaparting these out just in case
+//there is another mod that adds spells that use the same files
+ACTION_IF FILE_EXISTS_IN_GAME ~#PRAYERG.SPL~ BEGIN
+
+	//Buffs that only target the caster and can be dispelled
+	ACTION_FOR_EACH ~spell~ IN 
+		~SPPR218~
+		~SPPR323~ ~SPPR328~
+		~SPPR424~
+		~SPPR520~
+		~SPPR615~
+		~SPPR737~ ~SPPR735~
+	BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
+		COPY_EXISTING ~%spell%.SPL~ ~override~
+			LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 END
+		BUT_ONLY
+	  END
+	END
+
+	//Buffs that only target the caster and can't be dispelled
+	ACTION_FOR_EACH spell IN
+		~SPPR324~
+	BEGIN
+		COPY_EXISTING ~%spell%.spl~ ~override~
+			LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 dispel = 2 END
+		IF_EXISTS
+	END
+
+	//Buffs that affect a target
+	ACTION_FOR_EACH ~spell~ IN 
+		~SPPR322~
+		~SPPR421~
+		~SPPR522~ 
+	BEGIN
+	  ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
+		COPY_EXISTING ~%spell%.SPL~ ~override~
+		  LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 END
+		BUT_ONLY
+	  END
+	END
+	
+	//Buffs that affect a target and need a name override
+	LAF ~GET_SPELL_NAME~ STR_VAR spell_name = ~SPPR320~ RET ovName = name END
+	
+	ACTION_IF FILE_EXISTS_IN_GAME ~#PRAYERG.SPL~ THEN BEGIN
+		COPY_EXISTING ~#PRAYERG.SPL~ ~override~
+			LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 STR_VAR overrideName = EVALUATE_BUFFER ~%ovName%~ END
+		BUT_ONLY
+	END
+	
+	LAF ~GET_SPELL_NAME~ STR_VAR spell_name = ~SPPR420~ RET ovName = name END
+	ACTION_IF FILE_EXISTS_IN_GAME ~#RECITEG.SPL~ THEN BEGIN
+		COPY_EXISTING ~#RECITEG.SPL~ ~override~
+			LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 STR_VAR overrideName = EVALUATE_BUFFER ~%ovName%~ END
+		BUT_ONLY
+	END
+	
+	
+	LAF ~GET_SPELL_NAME~ STR_VAR spell_name = ~SPPR518~ RET ovName = name END
+	ACTION_FOR_EACH ~spell~ IN 
+		~SPPR518A~ ~SPPR518B~
+	BEGIN
+	  ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
+		COPY_EXISTING ~%spell%.SPL~ ~override~
+		  LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 STR_VAR overrideName = EVALUATE_BUFFER ~%ovName%~ END
+		BUT_ONLY
+	  END
+	END
+END
+
+//IWD Arcane Spells - player versions. I'm seaparting these out just in case
+//there is another mod that adds spells that use the same files
+ACTION_IF FILE_EXISTS_IN_GAME ~DOBONE.ITM~ BEGIN
+
+	//Buffs that only target the caster and can be dispelled
+	ACTION_FOR_EACH ~spell~ IN 
+		~SPWI126~
+		~SPWI226~
+		~SPWI627~ ~SPWI631~ ~SPWI629~
+		~SPWI728~
+		~SPWI820~ ~SPWI806~
+	BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
+		COPY_EXISTING ~%spell%.SPL~ ~override~
+			LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 END
+		BUT_ONLY
+	  END
+	END
+
+	//Buffs that only target the caster and can't be dispelled
+	ACTION_FOR_EACH spell IN
+		~SPWI630~
+	BEGIN
+		COPY_EXISTING ~%spell%.spl~ ~override~
+			LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 dispel = 2 END
+		IF_EXISTS
+	END
+
+	//Buffs that affect a target
+	ACTION_FOR_EACH ~spell~ IN 
+		~SPWI227~
+		~SPWI426~ ~SPWI427~
+	BEGIN
+	  ACTION_IF FILE_EXISTS_IN_GAME ~%spell%.SPL~ THEN BEGIN
+		COPY_EXISTING ~%spell%.SPL~ ~override~
+		  LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 END
+		BUT_ONLY
+	  END
 	END
 END

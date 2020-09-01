@@ -68,10 +68,12 @@ BEGIN
   BUT_ONLY
 
   //handle some SCS versions of vanilla spells
-  ACTION_FOR_EACH spellname IN 
-    ~dw#wisg1~ ~dw#wisg2~ ~dw#wisg3~ ~dw#wisg4~ ~dw#basum~ ~dw#cacof~ ~dw#devag~ ~dw#devae~ ~dw#elemp~
-    ~dw#gatep~ ~dw#harmn~ ~dw#plane~ ~dw#plang~ ~dw#qalac~ ~dw#sumef~ ~dw#sumgl~ ~dw#sumyu~ ~dw#sumyn~
-    ~dw#sumbf~ ~dw#sumya~ ~dw#gatem~ ~dw#sumco~
+  ACTION_FOR_EACH spellname IN
+	~dw#cacof~ ~dw#devae~ ~dw#devag~ ~dw#gatem~ ~dw#gatep~
+	~dw#plane~ ~dw#plang~ ~dw#qalac~ ~dw#sumfi~ ~dw#sumya~
+	~dw#sumyn~ ~dw#sumyu~
+    ~dw#wisg1~ ~dw#wisg2~ ~dw#wisg3~ ~dw#wisg4~ ~dw#wisg5~
+	~dw#wisg6~ ~dw#wisg7~	
   BEGIN
     ACTION_IF FILE_EXISTS_IN_GAME ~%spellname%.spl~ BEGIN
       COPY_EXISTING ~%spellname%.spl~ ~override~

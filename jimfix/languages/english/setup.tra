@@ -26,6 +26,9 @@
 @32 = ~Requires Smarter Ascension Irenicus~
 @33 = ~Requires Smarter Celestials~
 @34 = ~Requires Smarter Mages~
+@35 = ~No longer needed with newer verisons of SCS and Fixpack/EE~
+@36 = ~Not necessary on EE~
+@37 = ~Only for games with SoA~
 
 @100 = ~is casting an Abjuration spell~
 @101 = ~is casting a Conjuration spell~
@@ -43,5 +46,5 @@
 @204 = ~Improved Alacrity expires in %limit% seconds~
 @205 = ~Improved Alacrity has expired~
 @206 = ~Time stop ends in %limit%.5 seconds~
-@207 = ~%itemName% has expired.~
-@208 = ~%itemName% expires in %limit% seconds.~
+@207 = ~%itemName% has expired~
+@208 = ~%itemName% expires in %limit% seconds~

@@ -1,23 +1,4 @@
-This is a small collection of fixes and tweaks aimed at an Ascension + Fixpack
-v10 + SCS v30 install. It should be smart about not letting you install
-components you don't need, but you should still pay attention. I do not have a
-copy of BG2 EE so please tell me if any additional issues arise in that
-version of the game.
-
-		       --- Fix Sunfire Power Levels ---
-
-The damage effects on the level 10 version of Sunfire incorrectly have a power
-level of 3. The primary effect of this is that they will be blocked by a Minor
-or regular Globe of Invulnerability. The level 11 version also has one of its
-damage effects set to power level 6. The component fixes both errors.
-
-Credit to Alesa_BH for noticing this.
-
-	     --- Enable Spell Immunity in Sequencers/Triggers ---
-
-TobEx is intended to allow you to place Spell Immunity into Contingencies and
-Triggers. However, this functionality is not enabled by default. This
-component enables it.
+This is a small collection of fixes and tweaks aimed at an Ascension + SCS v33 install. 
 
 	    --- Shield of Reflection works on SCS Flame Arrows ---
 
@@ -26,33 +7,6 @@ mages are scripted to act as if this is the case. However, with the "Make
 Protection from Normal Missiles affect some magical projectiles" component,
 the Reflection Shield does not actually reflect Flame Arrow. This component
 re-adds that ability to the Reflection Shield.
-
-			 --- Fix Smarter Abazibal ---
-
-In previous versions of Ascension + SCS, when Abazigal turned in to a dragon
-he would also spawn a purple dragon named Tamah. In SCS v30, Tamah does not
-appear if you have installed the Smarter Abazigal component. Abazigal also has
-the wrong script which may make him unreasonably difficult to kill for some
-parties. This component fixes both glitches.
-
-Credit to Mad Mate on the G3 forums for help with this fix.
-
-		  --- Fix Smarter Irenicus at the Throne ---
-
-A scripting glitch causes Irenicus to be completely harmless during the
-opening fight at the Throne of Bhaal if you have the component that adds SCS
-AI to him. This component fixes this.
-
-Credit to Alesia_BH for noticing this and to Aasim for help with this fix.
-
-	    --- Remove Entourage from Ascension Fallen Solars ---
-
-In the original Ascension version of the first fight at the Throne of the
-Bhaal, you must fight two Fallen Solars. As of SCS v25, the Smarter Celesitals
-Component causes both of these Fallen Solars to additionally spawn with two
-Mariliths, a Succubus, and an Alu-fiend. While it has not been officially
-confirmed, there is significant evidence to suggest that these extra demons
-are unintentional. This component removes them.
 
 		    --- Fix incorrect casting animations ---
 
@@ -67,12 +21,6 @@ erroneously set as an Enchantment spell.
 
 This component may be overkill. It provides of a listing of all the changes it
 makes so if you don't like some of them, you can uninstall the component.
-
-		       --- Prevent silent prebuffs ---
-
-Under certain conditions, SCS smarter mages will silently gain some long
-duration prebuffs. This component changes this behavior to always display
-these prebuffs in the combat log.
 
 	   --- Add spell school notifications to the combat log ---
 
