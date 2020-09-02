@@ -72,7 +72,7 @@ ACTION_FOR_EACH ~spell~ IN
 			   ~SPPR701~ ~SPPR725~ ~SPPR730~
 			   ~SPWI102~ ~SPWI107~ ~SPWI114~ ~SPWI120~
 			   ~SPWI201~ ~SPWI212~ ~SPWI219~ ~SPWI222~
-			   ~SPWI317~ ~SPWI318~
+			   ~SPWI317~ ~SPWI318~ ~SPWI315~
 			   ~SPWI403~ ~SPWI406~ ~SPWI416~ ~SPWI418~
 			   ~SPWI505~ ~SPWI511~ ~SPWI518~ ~SPWI519~ ~SPWI522~ ~SPWI590~ ~SPWI591~ ~SPWI592~
 			   ~SPWI593~ ~SPWI594~ ~SPWI595~ ~SPWI596~ ~SPWI597~
@@ -97,6 +97,7 @@ END
 //Buffs that only target the caster and can't be dispelled
 ACTION_FOR_EACH spell IN ~SPCL152~ ~SPCL238~ ~SPCL321~ ~SPCL423~ ~SPCL521~ ~SPCL522~
 						 ~SPCL904~ ~SPCL907~ ~SPCL913~ ~SPCL914~ ~SPCL917~ ~SPCL941~
+						 ~SPDWD02~
 BEGIN
 	COPY_EXISTING ~%spell%.spl~ ~override~
 		LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 dispel = 2 END
@@ -155,11 +156,11 @@ LAF ~GET_SPELL_NAME~ STR_VAR spell_name = ~SPPR203~ RET ovName = name END
 //fixpack version of chant
 ACTION_IF FILE_EXISTS_IN_GAME ~SPPR203D.spl~ BEGIN
   COPY_EXISTING ~SPPR203D.spl~ ~override~
-    LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 1 STR_VAR overrideName = EVALUATE_BUFFER ~%ovName%~ END 
+    LPF ~HANDLE_TARGET_GROUP~ INT_VAR targ = 2 STR_VAR overrideName = EVALUATE_BUFFER ~%ovName%~ END 
   BUT_ONLY
 END
 
-//SCS added spells
+//SCS added prebuff spells
 ACTION_FOR_EACH filename IN 
 	~dwsc721~
 	~dwsp110~ ~dwsp111~
@@ -187,7 +188,7 @@ BEGIN
   END
 END
 
-//SCS added spells
+//SCS added prebuff spells
 ACTION_FOR_EACH filename IN 
 	~dwsp101~ ~dwsp108~
 	~dwsp406~
@@ -253,7 +254,7 @@ ACTION_FOR_EACH filename IN ~SPWISH17.SPL~ ~DW#WISH3.SPL~ BEGIN
 	END
 END
 
-//IWD Divine Spells - player versions. I'm seaparting these out just in case
+//IWD Divine Spells - player versions. I'm separating these out just in case
 //there is another mod that adds spells that use the same files
 ACTION_IF FILE_EXISTS_IN_GAME ~#PRAYERG.SPL~ BEGIN
 
@@ -324,7 +325,7 @@ ACTION_IF FILE_EXISTS_IN_GAME ~#PRAYERG.SPL~ BEGIN
 	END
 END
 
-//IWD Arcane Spells - player versions. I'm seaparting these out just in case
+//IWD Arcane Spells - player versions. I'm separating these out just in case
 //there is another mod that adds spells that use the same files
 ACTION_IF FILE_EXISTS_IN_GAME ~DOBONE.ITM~ BEGIN
 
