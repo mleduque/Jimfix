@@ -4,7 +4,29 @@ VERSION ~v3.0~
 
 README ~jimfix/readme/readme.txt~
 
+ALWAYS
+
+	/* Converts tra files to UTF-8 */
+	// No exception, everything needs to be converted
+	ACTION_DEFINE_ARRAY jimfixnoconvert BEGIN END
+
+	// any tra files used in LANGUAGE need to be reloaded after UTF-8 conversion
+	ACTION_DEFINE_ARRAY jimfixreload BEGIN Setup END
+
+	LAF HANDLE_CHARSETS
+		INT_VAR
+			infer_charsets = 1
+		STR_VAR
+			tra_path = EVAL ~%MOD_FOLDER%/languages~
+			noconvert_array = jimfixnoconvert
+			reload_array = jimfixreload
+	END
+
+END
+
 LANGUAGE ~English~     ~english~     ~jimfix/languages/english/setup.tra~
+
+LANGUAGE ~Russian~     ~russian~     ~jimfix/languages/russian/setup.tra~
 
 //Deprecated Sunfire fix
 BEGIN @10
