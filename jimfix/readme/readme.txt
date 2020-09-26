@@ -70,3 +70,6 @@ With SCS changes to the spell system, the Breach from Wish and the complete disp
 from fallen solar's Mordenkainen's Disjunction are both completely unblockable.
 This component allows Spell Shield to block them as it would block any other
 anti-magic attack.
+
+Credits:
+Arkie for the Russian translation.
