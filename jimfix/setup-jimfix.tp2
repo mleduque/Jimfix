@@ -28,6 +28,11 @@ LANGUAGE ~English~     ~english~     ~jimfix/languages/english/setup.tra~
 
 LANGUAGE ~Russian~     ~russian~     ~jimfix/languages/russian/setup.tra~
 
+LANGUAGE ~French~ 
+  ~french~ 
+  ~jimfix/languages/english/setup.tra~
+  ~jimfix/languages/french/setup.tra~
+
 //Deprecated Sunfire fix
 BEGIN @10
 DESIGNATED 0
